@@ -1,0 +1,859 @@
+<!-- SQOD Camera & Microphone Tester (no recording) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="google" content="notranslate" />
+  <title>Camera & Microphone Tester</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --brand:#080A52;   /* SQOD navy */
+      --accent:#F3185E;  /* SQOD pink */
+      --bg:#FCFCFE;
+      --card:#ffffff;
+      --muted: rgba(8,10,82,0.72);
+      --line: rgba(8,10,82,0.12);
+      --shadow: 0 10px 28px rgba(8,10,82,0.10);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: var(--bg);
+      color: var(--brand);
+    }
+
+    .wrap{
+      width: min(980px, 92vw);
+      margin: 28px auto;
+      padding: 0 0 28px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:14px;
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    h1{
+      margin:0;
+      font-size: 1.35rem;
+      font-weight:600;
+      letter-spacing:-0.2px;
+    }
+    .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height:1.45;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      box-shadow: 0 6px 14px rgba(8,10,82,0.06);
+      color: var(--muted);
+      font-size:0.85rem;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(8,10,82,0.25);
+    }
+    .dot.ok{ background: #19a974; }
+    .dot.warn{ background: #ffb020; }
+    .dot.bad{ background: #e24b4b; }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-top: 12px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      background: var(--accent);
+      color:#fff;
+      font-family:inherit;
+      font-weight:600;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(243,24,94,0.20);
+      transition: transform .06s ease, filter .12s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{
+      background: #fff;
+      color: var(--brand);
+      border:1px solid var(--line);
+      box-shadow:none;
+      font-weight:600;
+    }
+    .btn:disabled{
+      opacity:0.6;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 600px){
+      .row{ grid-template-columns:1fr; }
+    }
+
+    label{
+      display:block;
+      font-size:0.85rem;
+      color: var(--muted);
+      margin-bottom:6px;
+    }
+    select{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      font-family:inherit;
+      background:#fff;
+      color: var(--brand);
+      outline:none;
+    }
+
+    .panelTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .panelTitle h2{
+      margin:0;
+      font-size: 1.05rem;
+      font-weight:600;
+    }
+
+    .statusGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 600px){
+      .statusGrid{ grid-template-columns: 1fr; }
+    }
+
+    .statusCard{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-height: 108px;
+    }
+    .statusTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .statusName{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:600;
+    }
+    .pill{
+      font-size:0.78rem;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color: var(--muted);
+      background: rgba(8,10,82,0.03);
+      white-space:nowrap;
+    }
+    .pill.ok{ border-color: rgba(25,169,116,0.35); background: rgba(25,169,116,0.08); color:#0b6b47;}
+    .pill.warn{ border-color: rgba(255,176,32,0.45); background: rgba(255,176,32,0.10); color:#7a5200;}
+    .pill.bad{ border-color: rgba(226,75,75,0.35); background: rgba(226,75,75,0.10); color:#8a1f1f;}
+
+    .statusText{
+      color: var(--muted);
+      font-size:0.9rem;
+      line-height:1.45;
+      margin:0;
+    }
+
+    .meterWrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:auto;
+    }
+    .meter{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(8,10,82,0.04);
+      overflow:hidden;
+    }
+    .meter > span{
+      display:block;
+      height:100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 120ms linear;
+    }
+    .meterLabel{
+      font-size:0.82rem;
+      color: var(--muted);
+      min-width: 56px;
+      text-align:right;
+    }
+
+    .videoBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(8,10,82,0.03);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 260px;
+      position:relative;
+    }
+    video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+    .videoPlaceholder{
+      padding: 18px;
+      text-align:center;
+      color: var(--muted);
+      font-size:0.95rem;
+      line-height:1.45;
+    }
+    .hint{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height:1.5;
+    }
+    .hint b{ color: var(--brand); }
+
+    details{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background:#fff;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:600;
+      outline:none;
+    }
+    .faq{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height:1.55;
+      font-size:0.94rem;
+    }
+    .list li{ margin: 6px 0; }
+
+    .callout{
+      margin-top: 12px;
+      border-left: 4px solid var(--accent);
+      background: rgba(243,24,94,0.06);
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height:1.5;
+    }
+
+    .foot{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height:1.45;
+    }
+    .foot a{ color: var(--accent); text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Camera & Microphone Tester</h1>
+        <p class="sub">
+          Use this to check that your camera and microphone are working. Nothing is recorded or stored — the test runs locally in your browser.
+        </p>
+      </div>
+      <div class="badge" id="pageStatus">
+        <span class="dot" id="pageDot"></span>
+        <span id="pageStatusText">Ready to test</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Preview + controls -->
+      <div class="card">
+        <div class="panelTitle">
+          <h2>Live preview</h2>
+          <span class="pill" id="securePill">Checking site security…</span>
+        </div>
+
+        <div class="videoBox" aria-label="Camera preview area">
+          <video id="video" playsinline autoplay muted></video>
+          <div class="videoPlaceholder" id="videoPlaceholder">
+            Click <b>Start test</b> to request camera & microphone permissions.<br>
+            If prompted, choose <b>Allow</b>.
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px;">
+          <div>
+            <label for="cameraSelect">Camera</label>
+            <select id="cameraSelect" disabled>
+              <option value="">Start the test to list cameras</option>
+            </select>
+          </div>
+          <div>
+            <label for="micSelect">Microphone</label>
+            <select id="micSelect" disabled>
+              <option value="">Start the test to list microphones</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="startBtn" type="button">Start test</button>
+          <button class="btn secondary" id="stopBtn" type="button" disabled>Stop</button>
+          <button class="btn secondary" id="retestBtn" type="button" disabled>Re-check</button>
+        </div>
+
+        <p class="hint" id="quickHint">
+          Tip: If you’re using headphones or a USB device, plug it in <b>before</b> starting the test.
+        </p>
+
+        <div class="callout" id="privacyNote">
+          <b>Privacy:</b> This page does not record audio/video. Your browser may show a camera/mic indicator while the test is running.
+        </div>
+      </div>
+
+      <!-- Right: Status -->
+      <div class="card">
+        <div class="panelTitle">
+          <h2>Results</h2>
+          <span class="pill" id="overallPill">Not started</span>
+        </div>
+
+        <div class="statusGrid">
+          <div class="statusCard" id="camCard">
+            <div class="statusTop">
+              <div class="statusName">
+                <span>Camera</span>
+              </div>
+              <span class="pill" id="camPill">Not started</span>
+            </div>
+            <p class="statusText" id="camText">Start the test to check your camera.</p>
+          </div>
+
+          <div class="statusCard" id="micCard">
+            <div class="statusTop">
+              <div class="statusName">
+                <span>Microphone</span>
+              </div>
+              <span class="pill" id="micPill">Not started</span>
+            </div>
+            <p class="statusText" id="micText">Start the test to check your microphone.</p>
+
+            <div class="meterWrap" aria-label="Microphone level meter">
+              <div class="meter" aria-hidden="true"><span id="micMeterBar"></span></div>
+              <div class="meterLabel" id="micMeterLabel">0%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq" aria-label="Troubleshooting guidance">
+          <details>
+            <summary>I clicked “Start test” and nothing happened</summary>
+            <ul class="list">
+              <li>Make sure you clicked the button (the browser must receive a user action to request permissions).</li>
+              <li>Check if your browser blocked the permission prompt (look for a camera/microphone icon near the address bar).</li>
+              <li>Try again in a private/incognito window (extensions can interfere).</li>
+              <li>If you’re on a work network, security settings may block camera/mic access.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Camera says “Blocked” or “Denied”</summary>
+            <ul class="list">
+              <li>In your browser address bar, click the padlock (or camera icon) and set <b>Camera</b> to <b>Allow</b>, then refresh the page.</li>
+              <li>Check OS permissions:
+                <ul class="list" style="margin-top:6px;">
+                  <li><b>Windows:</b> Settings → Privacy & security → Camera / Microphone → allow access for your browser.</li>
+                  <li><b>macOS:</b> System Settings → Privacy & Security → Camera / Microphone → enable your browser.</li>
+                  <li><b>iOS/iPadOS:</b> Settings → your browser (Safari/Chrome) → Camera / Microphone.</li>
+                  <li><b>Android:</b> Settings → Privacy / Permissions → Camera / Microphone → allow for your browser.</li>
+                </ul>
+              </li>
+              <li>Close other apps using the camera (Teams/Zoom/FaceTime) and retry.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Microphone shows “Working” but the level stays at 0%</summary>
+            <ul class="list">
+              <li>Make a noise while watching the meter (it only moves when audio is detected).</li>
+              <li>Choose the correct microphone from the dropdown (headset vs built-in).</li>
+              <li>Check your mic isn’t muted by a hardware switch or keyboard key.</li>
+              <li>On Windows, confirm the correct input is selected: Settings → System → Sound → Input.</li>
+              <li>On macOS, confirm input level: System Settings → Sound → Input.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>The preview is black or frozen</summary>
+            <ul class="list">
+              <li>Switch to a different camera using the Camera dropdown.</li>
+              <li>Unplug/replug USB webcams and press <b>Re-check</b>.</li>
+              <li>Update your browser (Chrome/Edge/Safari/Firefox) and restart it.</li>
+              <li>Disable “Low light compensation” or similar camera settings if your driver/software provides them.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Why does this page need HTTPS?</summary>
+            <ul class="list">
+              <li>Browsers require a <b>secure context</b> (HTTPS) to use camera/microphone APIs on most sites.</li>
+              <li>Help Scout Knowledge Base pages are typically HTTPS — if you embed this elsewhere, ensure the page is served securely.</li>
+            </ul>
+          </details>
+        </div>
+
+        <p class="foot">
+          If you still can’t get camera/microphone access, try a different browser/device, then contact support with a screenshot of the result on this page.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- UI helpers ---
+    const el = (id) => document.getElementById(id);
+
+    function setPageStatus(kind, text){
+      const dot = el('pageDot');
+      const label = el('pageStatusText');
+      dot.className = 'dot' + (kind ? ' ' + kind : '');
+      label.textContent = text;
+    }
+
+    function setPill(pillEl, kind, text){
+      pillEl.className = 'pill' + (kind ? ' ' + kind : '');
+      pillEl.textContent = text;
+    }
+
+    function setCardState(which, kind, titleText){
+      if(which === 'cam'){
+        setPill(el('camPill'), kind, titleText);
+      }else{
+        setPill(el('micPill'), kind, titleText);
+      }
+    }
+
+    // --- Elements ---
+    const startBtn = el('startBtn');
+    const stopBtn  = el('stopBtn');
+    const retestBtn= el('retestBtn');
+    const video    = el('video');
+    const videoPlaceholder = el('videoPlaceholder');
+    const camSelect = el('cameraSelect');
+    const micSelect = el('micSelect');
+    const micBar   = el('micMeterBar');
+    const micLabel = el('micMeterLabel');
+
+    // --- State ---
+    let stream = null;
+    let audioCtx = null;
+    let analyser = null;
+    let micSource = null;
+    let rafId = null;
+
+    // HTTPS / secure context hint
+    (function initSecure(){
+      const secure = (window.isSecureContext === true);
+      const pill = el('securePill');
+      if(secure){
+        setPill(pill, 'ok', 'Secure page (HTTPS)');
+      }else{
+        setPill(pill, 'warn', 'Not secure (HTTPS required)');
+      }
+    })();
+
+    function stopAll(){
+      if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+      micBar.style.width = '0%';
+      micLabel.textContent = '0%';
+
+      if(micSource){
+        try{ micSource.disconnect(); }catch(e){}
+        micSource = null;
+      }
+      if(analyser){
+        try{ analyser.disconnect(); }catch(e){}
+        analyser = null;
+      }
+      if(audioCtx){
+        try{ audioCtx.close(); }catch(e){}
+        audioCtx = null;
+      }
+      if(stream){
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+
+      video.srcObject = null;
+      video.style.display = 'none';
+      videoPlaceholder.style.display = 'block';
+
+      camSelect.disabled = true;
+      micSelect.disabled = true;
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      retestBtn.disabled = true;
+
+      setPill(el('overallPill'), '', 'Not started');
+      setCardState('cam','', 'Not started');
+      setCardState('mic','', 'Not started');
+      el('camText').textContent = 'Start the test to check your camera.';
+      el('micText').textContent = 'Start the test to check your microphone.';
+      setPageStatus('', 'Ready to test');
+    }
+
+    function setOverallFromParts(camKind, micKind){
+      const overall = el('overallPill');
+      if(camKind === 'ok' && micKind === 'ok'){
+        setPill(overall,'ok','All good');
+        setPageStatus('ok','Camera & microphone working');
+      }else if(camKind === 'bad' || micKind === 'bad'){
+        setPill(overall,'bad','Needs attention');
+        setPageStatus('bad','One or more checks failed');
+      }else{
+        setPill(overall,'warn','Partially working');
+        setPageStatus('warn','Check the results');
+      }
+    }
+
+    function deviceLabel(d, fallback){
+      // Labels are often empty until after permission is granted
+      return (d && d.label && d.label.trim()) ? d.label : fallback;
+    }
+
+    async function populateDeviceLists(){
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cams = devices.filter(d => d.kind === 'videoinput');
+      const mics = devices.filter(d => d.kind === 'audioinput');
+
+      camSelect.innerHTML = '';
+      micSelect.innerHTML = '';
+
+      const camDefault = document.createElement('option');
+      camDefault.value = '';
+      camDefault.textContent = cams.length ? 'Default camera' : 'No camera devices found';
+      camSelect.appendChild(camDefault);
+
+      cams.forEach((d, idx) => {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = deviceLabel(d, `Camera ${idx+1}`);
+        camSelect.appendChild(opt);
+      });
+
+      const micDefault = document.createElement('option');
+      micDefault.value = '';
+      micDefault.textContent = mics.length ? 'Default microphone' : 'No microphone devices found';
+      micSelect.appendChild(micDefault);
+
+      mics.forEach((d, idx) => {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = deviceLabel(d, `Microphone ${idx+1}`);
+        micSelect.appendChild(opt);
+      });
+
+      camSelect.disabled = cams.length === 0;
+      micSelect.disabled = mics.length === 0;
+    }
+
+    function checkTracks(){
+      let camKind = 'warn';
+      let micKind = 'warn';
+
+      if(!stream){
+        camKind = 'bad';
+        micKind = 'bad';
+        return {camKind, micKind};
+      }
+
+      const vTrack = stream.getVideoTracks()[0];
+      const aTrack = stream.getAudioTracks()[0];
+
+      // Camera
+      if(!vTrack){
+        camKind = 'bad';
+        el('camText').textContent = 'No camera track detected.';
+        setCardState('cam','bad','No camera');
+      }else if(vTrack.readyState !== 'live' || vTrack.muted){
+        camKind = 'bad';
+        el('camText').textContent = 'Camera is not delivering video. Check permissions and device selection.';
+        setCardState('cam','bad','Not working');
+      }else{
+        camKind = 'ok';
+        el('camText').textContent = 'Camera is working — you should see a live preview.';
+        setCardState('cam','ok','Working');
+      }
+
+      // Microphone
+      if(!aTrack){
+        micKind = 'bad';
+        el('micText').textContent = 'No microphone track detected.';
+        setCardState('mic','bad','No microphone');
+      }else if(aTrack.readyState !== 'live'){
+        micKind = 'bad';
+        el('micText').textContent = 'Microphone is not delivering audio. Check permissions and device selection.';
+        setCardState('mic','bad','Not working');
+      }else{
+        // Actual audio level is checked by meter (below). This is a baseline “track exists” check.
+        micKind = 'ok';
+        el('micText').textContent = 'Microphone is connected — speak to see the meter move.';
+        setCardState('mic','ok','Working');
+      }
+
+      setOverallFromParts(camKind, micKind);
+      return {camKind, micKind};
+    }
+
+    function startMicMeter(){
+      if(!stream) return;
+
+      const aTrack = stream.getAudioTracks()[0];
+      if(!aTrack) return;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+
+      micSource = audioCtx.createMediaStreamSource(new MediaStream([aTrack]));
+      micSource.connect(analyser);
+
+      const data = new Uint8Array(analyser.fftSize);
+
+      function tick(){
+        analyser.getByteTimeDomainData(data);
+
+        // RMS level (0..1)
+        let sum = 0;
+        for(let i=0;i<data.length;i++){
+          const v = (data[i] - 128) / 128;
+          sum += v * v;
+        }
+        const rms = Math.sqrt(sum / data.length);
+
+        // Map to percent (simple scaling)
+        const pct = Math.max(0, Math.min(100, Math.round(rms * 220)));
+
+        micBar.style.width = pct + '%';
+        micLabel.textContent = pct + '%';
+
+        rafId = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    async function startTest(){
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        setPill(el('overallPill'),'bad','Not supported');
+        setPageStatus('bad','Your browser does not support this test');
+        el('camText').textContent = 'Camera API not supported in this browser.';
+        el('micText').textContent = 'Microphone API not supported in this browser.';
+        setCardState('cam','bad','Not supported');
+        setCardState('mic','bad','Not supported');
+        return;
+      }
+
+      startBtn.disabled = true;
+      setPageStatus('warn','Requesting permissions…');
+      setPill(el('overallPill'),'warn','Requesting access');
+      setCardState('cam','warn','Checking…');
+      setCardState('mic','warn','Checking…');
+
+      const camId = camSelect.value || '';
+      const micId = micSelect.value || '';
+
+      const constraints = {
+        video: camId ? { deviceId: { exact: camId } } : true,
+        audio: micId ? { deviceId: { exact: micId } } : true
+      };
+
+      try{
+        // Stop anything existing first
+        if(stream) stopAll();
+
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        // Show preview
+        video.srcObject = stream;
+        video.style.display = 'block';
+        videoPlaceholder.style.display = 'none';
+
+        await populateDeviceLists();
+
+        // Enable controls
+        stopBtn.disabled = false;
+        retestBtn.disabled = false;
+
+        // If user selected a device earlier, keep it selected where possible
+        // (note: deviceIds can be unstable across sessions)
+        checkTracks();
+        startMicMeter();
+
+        setPageStatus('ok','Test running');
+      }catch(err){
+        // Common errors: NotAllowedError, NotFoundError, NotReadableError, OverconstrainedError
+        console.error(err);
+        stopBtn.disabled = true;
+        retestBtn.disabled = true;
+        startBtn.disabled = false;
+
+        let camKind = 'bad', micKind = 'bad';
+        let overallMsg = 'Permission blocked';
+        let pageMsg = 'Camera/mic access blocked';
+
+        if(err && (err.name === 'NotAllowedError' || err.name === 'SecurityError')){
+          overallMsg = 'Permission denied';
+          pageMsg = 'Permissions were denied';
+          el('camText').textContent = 'Permission denied. Allow camera access in your browser settings, then refresh.';
+          el('micText').textContent = 'Permission denied. Allow microphone access in your browser settings, then refresh.';
+        }else if(err && err.name === 'NotFoundError'){
+          overallMsg = 'No devices found';
+          pageMsg = 'No camera/microphone found';
+          el('camText').textContent = 'No camera detected on this device.';
+          el('micText').textContent = 'No microphone detected on this device.';
+        }else if(err && err.name === 'NotReadableError'){
+          overallMsg = 'Device in use';
+          pageMsg = 'Device may be in use';
+          el('camText').textContent = 'Camera could be in use by another app (Teams/Zoom/FaceTime). Close it and retry.';
+          el('micText').textContent = 'Microphone could be in use by another app. Close it and retry.';
+        }else if(err && err.name === 'OverconstrainedError'){
+          overallMsg = 'Device selection issue';
+          pageMsg = 'Try default devices';
+          el('camText').textContent = 'Selected camera could not be used. Try “Default camera” or another device.';
+          el('micText').textContent = 'Selected microphone could not be used. Try “Default microphone” or another device.';
+        }else{
+          overallMsg = 'Test failed';
+          pageMsg = 'Something went wrong';
+          el('camText').textContent = 'Could not start the camera test. See troubleshooting below.';
+          el('micText').textContent = 'Could not start the microphone test. See troubleshooting below.';
+        }
+
+        setPill(el('overallPill'),'bad', overallMsg);
+        setPageStatus('bad', pageMsg);
+        setCardState('cam', camKind, 'Not working');
+        setCardState('mic', micKind, 'Not working');
+      }
+    }
+
+    async function retest(){
+      // Re-check track health + refresh device lists (no new prompt unless devices changed)
+      setPageStatus('warn','Re-checking…');
+      try{
+        await populateDeviceLists();
+      }catch(e){}
+      checkTracks();
+      setTimeout(() => {
+        if(stream) setPageStatus('ok','Test running');
+      }, 250);
+    }
+
+    // Changing device selection: restart stream with chosen devices
+    async function restartWithSelectedDevices(){
+      if(!stream) return;
+      await startTest();
+    }
+
+    // Events
+    startBtn.addEventListener('click', startTest);
+    stopBtn.addEventListener('click', stopAll);
+    retestBtn.addEventListener('click', retest);
+    camSelect.addEventListener('change', restartWithSelectedDevices);
+    micSelect.addEventListener('change', restartWithSelectedDevices);
+
+    // Initial state
+    stopAll();
+
+    // Update device list if available (labels may be blank until permission granted)
+    if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices){
+      navigator.mediaDevices.enumerateDevices().then(() => {
+        // Not calling populateDeviceLists() yet because it may show blank labels; keep simple.
+      }).catch(()=>{});
+    }
+  </script>
+</body>
+</html>

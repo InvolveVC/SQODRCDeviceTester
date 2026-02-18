@@ -1,4 +1,3 @@
-<!-- SQOD Camera & Microphone Tester (no recording) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -31,11 +30,11 @@
       color: var(--brand);
     }
 
-    .wrap{
-      width: min(980px, 92vw);
-      margin: 28px auto;
-      padding: 0 0 28px;
-    }
+   .wrap{
+  width: min(980px, 92vw);
+  margin: 10px auto;
+  padding: 0 0 28px;
+}
 
     .header{
       display:flex;
@@ -337,27 +336,19 @@
 
 <body>
   <div class="wrap">
-    <div class="header">
-      <div class="title">
-        <h1>Camera and Microphone Tester</h1>
-        <p class="sub">
-          No visual or audio data is stored, this test runs locally in your browser.
-        </p>
-      </div>
-      <div class="badge" id="pageStatus">
-        <span class="dot" id="pageDot"></span>
-        <span id="pageStatusText">Ready to test</span>
-      </div>
-    </div>
-
     <div class="grid">
       <!-- Left: Preview + controls -->
       <div class="card">
-        <div class="panelTitle">
-          <h2>Live preview</h2>
-          <span class="pill" id="securePill">Checking site security…</span>
-        </div>
-
+   <div class="panelTitle">
+  <h2>Live preview</h2>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <span class="pill" id="securePill">Checking site security…</span>
+    <span class="badge" id="pageStatus" style="box-shadow:none;border:1px solid var(--line);">
+      <span class="dot" id="pageDot"></span>
+      <span id="pageStatusText">Ready to test</span>
+    </span>
+  </div>
+</div>
         <div class="videoBox" aria-label="Camera preview area">
           <video id="video" playsinline autoplay muted></video>
           <div class="videoPlaceholder" id="videoPlaceholder">

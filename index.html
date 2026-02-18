@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="google" content="notranslate" />
-  <title>Camera & Microphone Tester</title>
+  <title>Camera and Microphone Tester</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -339,9 +339,9 @@
   <div class="wrap">
     <div class="header">
       <div class="title">
-        <h1>Camera & Microphone Tester</h1>
+        <h1>Camera and Microphone Tester</h1>
         <p class="sub">
-          Use this to check that your camera and microphone are working. Nothing is recorded or stored — the test runs locally in your browser.
+          No visual or audio is recorded or stored, this test runs locally in your browser.
         </p>
       </div>
       <div class="badge" id="pageStatus">
@@ -430,22 +430,26 @@
           </div>
         </div>
 
-        <div class="faq" aria-label="Troubleshooting guidance">
+<div class="panelTitle" style="margin-top:14px;">
+  <h2>Common problems</h2>
+</div>
+
+<div class="faq" aria-label="Troubleshooting guidance">
           <details>
             <summary>I clicked “Start test” and nothing happened</summary>
             <ul class="list">
-              <li>Make sure you clicked the button (the browser must receive a user action to request permissions).</li>
-              <li>Check if your browser blocked the permission prompt (look for a camera/microphone icon near the address bar).</li>
-              <li>Try again in a private/incognito window (extensions can interfere).</li>
-              <li>If you’re on a work network, security settings may block camera/mic access.</li>
+              <li>Confirm you selected the button (browsers require an explicit user action before requesting permissions).</li>
+              <li>Check whether the permission prompt was suppressed (look for a camera/microphone icon near the address bar).</li>
+              <li>Repeat the test in a private/incognito window to rule out browser extensions interfering.</li>
+              <li>On managed or clinical networks, organisational security policies may restrict camera or microphone access.</li>
             </ul>
           </details>
 
           <details>
             <summary>Camera says “Blocked” or “Denied”</summary>
             <ul class="list">
-              <li>In your browser address bar, click the padlock (or camera icon) and set <b>Camera</b> to <b>Allow</b>, then refresh the page.</li>
-              <li>Check OS permissions:
+              <li>In the browser address bar, select the padlock (or camera icon), set <b>Camera</b> to <b>Allow</b>, then refresh the page.</li>
+              <li>Verify operating system permissions:
                 <ul class="list" style="margin-top:6px;">
                   <li><b>Windows:</b> Settings → Privacy & security → Camera / Microphone → allow access for your browser.</li>
                   <li><b>macOS:</b> System Settings → Privacy & Security → Camera / Microphone → enable your browser.</li>
@@ -453,43 +457,41 @@
                   <li><b>Android:</b> Settings → Privacy / Permissions → Camera / Microphone → allow for your browser.</li>
                 </ul>
               </li>
-              <li>Close other apps using the camera (Teams/Zoom/FaceTime) and retry.</li>
+              <li>Close any applications that may be using the camera (e.g., Teams, Zoom, FaceTime), then retry.</li>
             </ul>
           </details>
 
           <details>
             <summary>Microphone shows “Working” but the level stays at 0%</summary>
             <ul class="list">
-              <li>Make a noise while watching the meter (it only moves when audio is detected).</li>
-              <li>Choose the correct microphone from the dropdown (headset vs built-in).</li>
-              <li>Check your mic isn’t muted by a hardware switch or keyboard key.</li>
-              <li>On Windows, confirm the correct input is selected: Settings → System → Sound → Input.</li>
-              <li>On macOS, confirm input level: System Settings → Sound → Input.</li>
+              <li>Speak or make a brief sound while observing the meter (it updates only when audio is detected).</li>
+              <li>Select the correct microphone from the dropdown list (e.g., headset versus built-in microphone).</li>
+              <li>Check that the microphone is not muted via a hardware switch, headset control, or keyboard mute key.</li>
+              <li>Windows: confirm the correct input is selected and active (Settings → System → Sound → Input).</li>
+              <li>macOS: confirm the input device and level (System Settings → Sound → Input).</li>
             </ul>
           </details>
 
           <details>
             <summary>The preview is black or frozen</summary>
             <ul class="list">
-              <li>Switch to a different camera using the Camera dropdown.</li>
-              <li>Unplug/replug USB webcams and press <b>Re-check</b>.</li>
-              <li>Update your browser (Chrome/Edge/Safari/Firefox) and restart it.</li>
-              <li>Disable “Low light compensation” or similar camera settings if your driver/software provides them.</li>
+              <li>Select an alternative camera from the Camera dropdown.</li>
+              <li>If using a USB webcam, disconnect/reconnect it and then select <b>Re-check</b>.</li>
+              <li>Update your browser (Chrome/Edge/Safari/Firefox) and restart it fully.</li>
+              <li>If your camera driver/software includes advanced settings (e.g., low-light compensation), review them and retry.</li>
             </ul>
           </details>
 
           <details>
             <summary>Why does this page need HTTPS?</summary>
             <ul class="list">
-              <li>Browsers require a <b>secure context</b> (HTTPS) to use camera/microphone APIs on most sites.</li>
-              <li>Help Scout Knowledge Base pages are typically HTTPS — if you embed this elsewhere, ensure the page is served securely.</li>
+              <li>Most browsers require a <b>secure context</b> (HTTPS) to allow camera and microphone access.</li>
+              <li>Help Scout Knowledge Base pages are typically served over HTTPS; if embedding elsewhere, ensure the host page is secure.</li>
             </ul>
           </details>
         </div>
 
-        <p class="foot">
-          If you still can’t get camera/microphone access, try a different browser/device, then contact support with a screenshot of the result on this page.
-        </p>
+        <!-- removed the "If you still can’t get camera/microphone access..." sentence as requested -->
       </div>
     </div>
   </div>
@@ -769,8 +771,6 @@
         stopBtn.disabled = false;
         retestBtn.disabled = false;
 
-        // If user selected a device earlier, keep it selected where possible
-        // (note: deviceIds can be unstable across sessions)
         checkTracks();
         startMicMeter();
 
